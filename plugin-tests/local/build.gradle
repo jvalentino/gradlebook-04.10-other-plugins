@@ -1,0 +1,11 @@
+buildscript {
+  repositories {
+	jcenter()
+  }
+  dependencies {
+    classpath 'com.blogspot.jvalentino.gradle:other-plugins:1.0.0'
+    
+  }
+}
+
+apply plugin: 'other-plugins'

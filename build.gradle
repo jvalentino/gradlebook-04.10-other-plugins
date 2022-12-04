@@ -1,0 +1,76 @@
+// PLUGINS
+apply plugin: 'groovy'
+apply plugin: 'codenarc'
+apply plugin: 'jacoco'
+apply plugin: 'maven'
+
+// CODENARC
+codenarc {
+	toolVersion = "1.1"
+}
+
+codenarcMain {
+	configFile = file("codenarc/CodeNarcMain.groovy")
+	reports {
+		html.enabled = true
+		xml.enabled = true
+	}
+}
+
+codenarcTest {
+	configFile = file("codenarc/CodeNarcTest.groovy")
+}
+
+// JACOCO
+jacocoTestReport {
+	reports {
+		xml.enabled true
+		csv.enabled false
+		html.enabled true
+	}
+}
+
+// GROOVY
+version = '1.0.0'
+group = 'com.blogspot.jvalentino.gradle'
+archivesBaseName = 'other-plugins'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+	compile gradleApi()
+    compile 'org.codehaus.groovy:groovy-all:2.4.12'
+    compile "org.gradle:gradle-hello-world-plugin:0.2"
+    
+    testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
+    testCompile 'cglib:cglib:3.2.6'
+    testCompile 'org.objenesis:objenesis:2.6'
+}
+
+// MAVEN
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: groovydoc) {
+    classifier = 'javadoc'
+    from groovydoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "http://localhost:8081/artifactory/gradle-release") {
+                authentication(userName: "admin", password: "changeit")
+            }
+        }
+    }
+}

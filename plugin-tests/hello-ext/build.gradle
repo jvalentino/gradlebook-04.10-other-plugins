@@ -1,0 +1,36 @@
+buildscript {
+  repositories {
+	jcenter()
+  }
+  dependencies {
+    classpath "org.gradle:gradle-hello-world-plugin:0.2"
+  }
+}
+
+apply plugin: "org.gradle.hello-world"
+
+task a {
+    doLast {
+        println 'a'
+    }
+}
+
+task b {
+    doLast {
+        println 'b'
+    }
+}
+
+task runBefore(dependsOn:['a','b']) {
+    doLast {
+        println "Running before..."
+    }
+}
+tasks.helloWorld.dependsOn 'runBefore'
+
+task runAfter(dependsOn:'helloWorld') {
+    doLast {
+        println "Running after..."
+    }
+}
+tasks.helloWorld.finalizedBy 'runAfter'
